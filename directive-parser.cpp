@@ -2,9 +2,9 @@
 #include <tchar.h>
 
 #include <cstdio>
-#include <list>
+#include <vector>
 
-using std::list;
+using std::vector;
 
 #define VK_LETTER_A 0x41
 #define VK_LETTER_S 0x53
@@ -34,8 +34,8 @@ public:
     bool a,b,c,d;
 };
 
-void PrintOrigKeySeq(list<int> q) {
-    list<int>::iterator it;
+void PrintOrigKeySeq(vector<int> q) {
+    vector<int>::iterator it;
     for (it = q.begin(); it != q.end(); ++it) {
         fprintf(stderr, "%X",*it);
     }
@@ -44,10 +44,13 @@ void PrintOrigKeySeq(list<int> q) {
 
 int _tmain(int argc, int argv)
 {
-    list<int> orig_key_seq; // 原始按键序列
+    vector<int> orig_key_seq(16); // 原始按键序列
+    vector<int>::size_type last_size;
     HoldDown hold_down;
 
     while (true) {
+        last_size = orig_key_seq.size();
+
         Sleep(20); // wait for directive
 
         // direction
@@ -57,6 +60,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.jump && KEYUP(VK_JUMP)) {
             hold_down.jump = false;
+            orig_key_seq.push_back(0xF8);
         }
 
         if (!hold_down.backward && KEYDOWN(VK_BACKWARD)) {
@@ -65,6 +69,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.backward && KEYUP(VK_BACKWARD)) {
             hold_down.backward = false;
+            orig_key_seq.push_back(0xF4);
         }
 
         if (!hold_down.crouch && KEYDOWN(VK_CROUCH)) {
@@ -73,6 +78,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.crouch && KEYUP(VK_CROUCH)) {
             hold_down.crouch = false;
+            orig_key_seq.push_back(0xF2);
         }
 
         if (!hold_down.forward && KEYDOWN(VK_FORWARD)) {
@@ -81,6 +87,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.forward && KEYUP(VK_FORWARD)) {
             hold_down.forward = false;
+            orig_key_seq.push_back(0xF6);
         }
 
         // ABCD
@@ -90,6 +97,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.a && KEYUP(VK_A)) {
             hold_down.a = false;
+            orig_key_seq.push_back(0xFA);
         }
 
         if (!hold_down.b && KEYDOWN(VK_B)) {
@@ -98,6 +106,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.b && KEYUP(VK_B)) {
             hold_down.b = false;
+            orig_key_seq.push_back(0xFB);
         }
 
         if (!hold_down.c && KEYDOWN(VK_C)) {
@@ -106,6 +115,7 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.c && KEYUP(VK_C)) {
             hold_down.c = false;
+            orig_key_seq.push_back(0xFC);
         }
 
         if (!hold_down.d && KEYDOWN(VK_D)) {
@@ -114,10 +124,16 @@ int _tmain(int argc, int argv)
         }
         if (hold_down.d && KEYUP(VK_D)) {
             hold_down.d = false;
+            orig_key_seq.push_back(0xFD);
         }
 
-        // 取指令
+        // 提取指令
+        if (last_size < orig_key_seq.size()) {
+            PrintOrigKeySeq(orig_key_seq);
+        }
+
         do {
+            // 清空指令
             static int blockcount = 0;
 
             if (blockcount < 20) {
@@ -126,7 +142,6 @@ int _tmain(int argc, int argv)
             }
 
             blockcount = 0;
-            PrintOrigKeySeq(orig_key_seq);
             orig_key_seq.clear();
         } while (0);
     }
