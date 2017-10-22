@@ -24,7 +24,7 @@ using std::list;
 #define KEYDOWN(vk_code) ((::GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
 #define KEYUP(vk_code) ((::GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
 
-class HoldDown { // Ñ¹¼ü
+class HoldDown { // å‹é”®
 public:
     HoldDown(void) : jump(false), backward(false), crouch(false), forward(false),
         a(false), b(false), c(false), d(false)
@@ -44,7 +44,7 @@ void PrintOrigKeySeq(list<int> q) {
 
 int _tmain(int argc, int argv)
 {
-    list<int> orig_key_seq; // Ô­Ê¼°´¼üĞòÁĞ
+    list<int> orig_key_seq; // åŸå§‹æŒ‰é”®åºåˆ—
     HoldDown hold_down;
 
     while (true) {
@@ -116,7 +116,7 @@ int _tmain(int argc, int argv)
             hold_down.d = false;
         }
 
-        // È¡Ö¸Áî
+        // å–æŒ‡ä»¤
         do {
             static int blockcount = 0;
 
